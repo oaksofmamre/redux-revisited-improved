@@ -10,12 +10,15 @@ import { createStore } from "redux";
 // reducer
 //
 
+const TODO_ADD = "TODO_ADD";
+const TODO_TOGGLE = "TODO_TOGGLE";
+
 function reducer(state, action) {
   switch (action.type) {
-    case "TODO_ADD": {
+    case TODO_ADD: {
       return applyAddTodo(state, action);
     }
-    case "TODO_TOGGLE": {
+    case TODO_TOGGLE: {
       return applyToggleTodo(state, action);
     }
     default:
@@ -24,7 +27,8 @@ function reducer(state, action) {
 }
 
 function applyAddTodo(state, action) {
-  return state.concat(action.todo);
+  const todo = Object.assign({}, action.todo, { completed: false });
+  return state.concat(todo);
 }
 
 function applyToggleTodo(state, action) {
@@ -50,23 +54,23 @@ const unsubscribe = store.subscribe(() => {
 
 /////////////////////////////////////////
 //
-// dispatch actions
+// dispatch actions using action creators
 //
 
-store.dispatch({
-  type: "TODO_ADD",
-  todo: { id: "0", name: "learn redux", completed: false }
-});
+//actions creators
+function doAddTodo(id, name) {
+  return { type: TODO_ADD, todo: { id, name } };
+}
 
-store.dispatch({
-  type: "TODO_ADD",
-  todo: { id: "1", name: "learn mobx", completed: false }
-});
+function doToggleTodo(id) {
+  return { type: TODO_TOGGLE, todo: { id } };
+}
 
-store.dispatch({
-  type: "TODO_TOGGLE",
-  todo: { id: "0" }
-});
+store.dispatch(doAddTodo("0", "learn redux"));
+store.dispatch(doAddTodo("1", "learn mobx"));
+store.dispatch(doAddTodo("2", "finish final project"));
+store.dispatch(doToggleTodo("0"));
+store.dispatch(doToggleTodo("1"));
 
 /////////////////////////////////////////
 
